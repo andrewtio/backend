@@ -36,6 +36,8 @@ const requestLogger = (request, response, next) => {
   next();
 };
 
+app.use(express.json());
+
 app.use(requestLogger);
 
 const generateId = () => {
