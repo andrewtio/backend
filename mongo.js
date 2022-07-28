@@ -20,6 +20,7 @@ const noteSchema = new mongoose.Schema({
 
 const Note = mongoose.model("Note", noteSchema);
 
+console.log(process.env.PASSWORD, "password");
 mongoose
   .connect(url)
   .then((result) => {
