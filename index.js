@@ -67,29 +67,35 @@ app.get("/api/notes", (request, response) => {
 });
 
 app.get("/api/notes/:id", (request, response) => {
-  const id = Number(request.params.id);
-  console.log("id", id);
-  const note = notes.find((note) => {
-    console.log(
-      "note get no",
-      note.id,
-      typeof note.id,
-      id,
-      typeof id,
-      note.id === id
-    );
-    return note.id === id;
-  });
-  console.log("note", note);
+  // OLD
+  // const id = Number(request.params.id);
+  // console.log("id", id);
+  // const note = notes.find((note) => {
+  //   console.log(
+  //     "note get no",
+  //     note.id,
+  //     typeof note.id,
+  //     id,
+  //     typeof id,
+  //     note.id === id
+  //   );
+  //   return note.id === id;
+  // });
+  // console.log("note", note);
 
-  if (note) {
-    response.json(note);
-  } else {
-    response.status(404).end();
-  }
+  // if (note) {
+  //   response.json(note);
+  // } else {
+  //   response.status(404).end();
+  // }
 
   // console.log("note", note);
   // response.json(note);
+
+  // NEW
+  Note.findById(request.params.id).then((note) => {
+    response.json(note);
+  });
 });
 
 // POST
@@ -97,21 +103,25 @@ app.post("/api/notes", (request, response) => {
   const body = request.body;
   console.log("body", body);
 
-  if (!body.content) {
+  if (body.content === undefined) {
     return response.status(400).json({
       error: "content-missing",
     });
   }
 
-  const note = {
-    id: generateId(),
+  const note = new Note({
     content: body.content,
     important: body.important || false,
     date: new Date(),
-  };
+  });
 
-  notes = notes.concat(note);
-  response.json(note);
+  // Old
+  // notes = notes.concat(note);
+  // response.json(note);
+
+  note.save().then((savedNote) => {
+    response.json(savedNote);
+  });
 });
 
 // DELETE
